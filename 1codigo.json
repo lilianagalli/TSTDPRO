@@ -1,0 +1,32 @@
+/ SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract NFTMinting is ERC721Enumerable {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIdCounter;
+
+    constructor() ERC721("MyNFT", "MNFT") {}
+
+    function mintTwoNFTs(address recipient1, address recipient2, string memory uri1, string memory uri2) public {
+        uint256 tokenId1 = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(recipient1, tokenId1);
+        _setTokenURI(tokenId1, uri1);
+
+        uint256 tokenId2 = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _mint(recipient2, tokenId2);
+        _setTokenURI(tokenId2, uri2);
+
+        // Llama al segundo contrato para acuñar más NFTs
+        address secondContractAddress = /* dirección del segundo contrato */;
+        ISecondContract(secondContractAddress).mintTwoMoreNFTs(recipient1, recipient2, "Libro Mentes Mejorando");
+    }
+}
+
+interface ISecondContract {
+    function mintTwoMoreNFTs(address recipient1, address recipient2, string memory hash) external;
+}
